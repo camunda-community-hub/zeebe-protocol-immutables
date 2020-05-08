@@ -37,7 +37,7 @@ configurations {
 
 ext {
     zeebeVersion = '0.23.1'
-    immutablesVersion = '2.8.3'
+    immutablesVersion = '2.8.7'
     jacksonVersion = '2.11.0'
     slf4jVersion = '1.7.30'
     junitVersion = '5.6.0'
