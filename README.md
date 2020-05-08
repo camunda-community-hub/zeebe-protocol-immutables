@@ -61,6 +61,7 @@ For example, an exporter could do the following:
 private static final ObjectMapper MAPPER = new ObjectMapper();
 
 public void export(Record record) {
+
   final Record clone = ImmutableRecord.builder().from(expected);
   
   try(final OutputStream out = createOutputStream()) {
@@ -68,6 +69,9 @@ public void export(Record record) {
   }
 }
 ```
+
+> Note: this will not serialize nested types, e.g. the value itself. If you want to recursively do so, you first have to clone the
+> value itself and set it in the builder. I'd like to improve this, but haven't gotten to it yet, as I was mostly focused on deserialization.
 
 You could then have configured the `ObjectMapper` to write YAML, CBOR, etc., beforehand.
 
