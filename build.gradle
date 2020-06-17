@@ -16,7 +16,7 @@
 plugins {
     id 'checkstyle'
     id 'java-library'
-    id 'com.diffplug.gradle.spotless' version '3.30.0'
+    id 'com.diffplug.gradle.spotless' version '4.3.1'
     id 'maven'
 }
 
