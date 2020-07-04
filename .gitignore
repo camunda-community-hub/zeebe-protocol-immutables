@@ -2,7 +2,10 @@
 .gradle
 
 # Ignore Gradle build output directory
-build
+build/
+
+# Ignore Maven build output directory
+target/
 
 # Ignore IntelliJ specific files
 .idea
