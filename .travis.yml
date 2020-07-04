@@ -2,22 +2,9 @@ language: java
 jdk: openjdk11
 os: linux
 
-# Caching
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
+install:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
-jobs:
-  include:
-    - stage: test
-      jdk: openjdk11
-      script: ./gradlew spotlessCheck
 
-    - stage: test
-      jdk: openjdk11
-      script: ./gradlew clean build
-      env: VERIFY=true
+script:
+  - mvn test -B
