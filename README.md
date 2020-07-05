@@ -2,12 +2,14 @@
 
 # zeebe-protocol-immutables
 
-This library provides an implementation of the Zeebe protocol which can be serialized and deserialized using Jackson.
+This library provides an implementation of the Zeebe protocol which can be serialized and
+deserialized using Jackson.
 
-It can be used in your exporters to copy and serialize Zeebe records to any data format Jackson supports. It can also deserialize
-records exported as JSON via `Record#toJson`. This means you can now easily rehydrate the records from JSON into
-equivalent `Record` objects, which are then compatible with standard Zeebe tooling. This is particularly useful for
-integration tests for Zeebe itself, for your exporters, and any application which has to deal with Zeebe records. 
+It can be used in your exporters to copy and serialize Zeebe records to any data format Jackson
+supports. It can also deserialize records exported as JSON via `Record#toJson`. This means you can
+now easily rehydrate the records from JSON into equivalent `Record` objects, which are then
+compatible with standard Zeebe tooling. This is particularly useful for integration tests for Zeebe
+itself, for your exporters, and any application which has to deal with Zeebe records.
 
 ## Usage
 
@@ -29,8 +31,8 @@ implementation 'io.zeebe.protocol:zeebe-protocol-immutables:1.0.0'
 
 ### Deserialize from JSON
 
-If you want to deserialize records that were serialized using `Record#toJson`, you can use the provided
-`RecordTypeReference` with an `ObjectReader`, e.g.
+If you want to deserialize records that were serialized using `Record#toJson`, you can use the
+provided `RecordTypeReference` with an `ObjectReader`, e.g.
 
 ```java
 final RecordTypeReference<?> genericRecordType = new RecordTypeReference<>();
@@ -38,8 +40,8 @@ final ObjectMapper mapper = new ObjectMapper();
 final Record<?> record = mapper.readValue(json, genericRecordType);
 ```
 
-The deserialized record will have the proper value concrete type, though you may have to cast it. If you
-already know the type you expect, however, you can also type the reference properly, e.g.
+The deserialized record will have the proper value concrete type, though you may have to cast it. If
+you already know the type you expect, however, you can also type the reference properly, e.g.
 
 ```java
 final RecordTypeReference<DeploymentRecordValue> recordType = new RecordTypeReference<>();
@@ -49,9 +51,10 @@ final Record<DeploymentRecordValue> record = mapper.readValue(json, recordType);
 
 ### Serialize record
 
-If you are writing an exporter and want to serialize an incoming record, but don't want to bother with writing your own
-serialization mechanism, you can also leverage this library by creating an `ImmutableRecord` from an existing record, and
-using any of Jackson's supported serialization formats, e.g. message pack, protobuf, cbor, YAML, etc.
+If you are writing an exporter and want to serialize an incoming record, but don't want to bother
+with writing your own serialization mechanism, you can also leverage this library by creating an
+`ImmutableRecord` from an existing record, and using any of Jackson's supported serialization
+formats, e.g. message pack, protobuf, cbor, YAML, etc.
 
 For example, an exporter could do the following:
 
@@ -72,8 +75,8 @@ You could then have configured the `ObjectMapper` to write YAML, CBOR, etc., bef
 
 ### Limitations
 
-There are some known limitations regarding serialization. Serializing as shown above will not 
-serialize nested types, e.g. the value itself. If you want to do so recursively, you first have to 
+There are some known limitations regarding serialization. Serializing as shown above will not
+serialize nested types, e.g. the value itself. If you want to do so recursively, you first have to
 clone the value itself and set it in the builder. I'd like to improve this, but haven't gotten to it
 yet, as I was mostly focused on deserialization.
 
@@ -109,21 +112,21 @@ mvn verify
 
 ## Design
 
-The actual implementation of the protocol is generated via 
+The actual implementation of the protocol is generated via
 [Immutables](https://immutables.github.io/) at compile time.
 
 Since the correct interfaces have to be annotated, we cannot simply use the ones provided in the 
-`zeebe-protocol` module, hence the abstract classes which implement these interfaces and are 
+`zeebe-protocol` module, hence the abstract classes which implement these interfaces and are
 properly annotated. Note that these classes are package-private by design, as users should be using
 the generated `Immutable*` versions of these classes.
 
 ### Deserialization
 
 The `Record` class in the protocol is typed; the value's concrete class and the intent's concrete 
-enum are both derived from the `Record#getValueType`. As such, both fields are annotated using 
-`@JsonTypeInfo` which points to that property, and are given a corresponding type resolver (see 
+enum are both derived from the `Record#getValueType`. As such, both fields are annotated using
+`@JsonTypeInfo` which points to that property, and are given a corresponding type resolver (see
 `ValueTypeIdResolver` and `IntentTypeIdResolver`), which allows Jackson to properly deserialize a 
-`Record<DeploymentRecordValue>` concretely as `ImmutableRecord<ImmutableDeploymentRecordValue>`. 
+`Record<DeploymentRecordValue>` concretely as `ImmutableRecord<ImmutableDeploymentRecordValue>`.
 
 ## Testing
 
@@ -133,6 +136,6 @@ Contributions are more than welcome :)
 
 ## Code of Conduct
 
-This project adheres to the Contributor Covenant [Code of Conduct](/CODE_OF_CONDUCT.md). By 
-participating, you are expected to uphold this code. Please report unacceptable behavior to 
+This project adheres to the Contributor Covenant [Code of Conduct](/CODE_OF_CONDUCT.md). By
+participating, you are expected to uphold this code. Please report unacceptable behavior to
 code-of-conduct@zeebe.io.
