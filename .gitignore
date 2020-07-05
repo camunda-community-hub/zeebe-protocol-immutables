@@ -9,6 +9,7 @@ target/
 
 # Ignore IntelliJ specific files
 .idea
+*.iml
 
 # Ignore jqwik files
 .jqwik-database
