@@ -63,7 +63,7 @@ private static final ObjectMapper MAPPER = new ObjectMapper();
 
 public void export(Record record) {
 
-  final Record clone = ImmutableRecord.builder().from(expected);
+  final Record clone = ImmutableRecord.builder().from(record);
   
   try(final OutputStream out = createOutputStream()) {
     MAPPER.writeValue(out, clone);  
