@@ -62,6 +62,12 @@ abstract class AbstractRecord<T extends RecordValue> extends AbstractJsonSeriali
     return "";
   }
 
+  @Value.Default
+  @Override
+  public String getBrokerVersion() {
+    return "";
+  }
+
   @JsonTypeInfo(use = Id.CUSTOM, include = As.EXTERNAL_PROPERTY, property = "valueType")
   @JsonTypeIdResolver(ValueTypeIdResolver.class)
   @Override
