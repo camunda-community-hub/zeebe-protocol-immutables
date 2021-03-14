@@ -22,12 +22,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Style.ImplementationVisibility;
+import org.immutables.value.Value.Style.ValidationMethod;
 
 @Target({ElementType.PACKAGE, ElementType.TYPE})
 @Retention(RetentionPolicy.CLASS)
 @Value.Style(
     get = {"is*", "get*"},
-    typeAbstract = {"Abstract*"},
-    visibility = ImplementationVisibility.PUBLIC)
+    visibility = ImplementationVisibility.PUBLIC,
+    jdkOnly = true,
+    defaults = @Value.Immutable(prehash = true),
+    validationMethod = ValidationMethod.NONE,
+    defaultAsDefault = true,
+    headerComments = true,
+    clearBuilder = true)
 @JsonSerialize
 public @interface ZeebeStyle {}

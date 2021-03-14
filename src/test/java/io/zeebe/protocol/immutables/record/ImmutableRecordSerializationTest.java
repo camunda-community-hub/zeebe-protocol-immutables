@@ -17,156 +17,63 @@ package io.zeebe.protocol.immutables.record;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.zeebe.broker.exporter.debug.DebugHttpExporter;
 import io.zeebe.protocol.immutables.record.assertj.ImmutableAssertions;
-import io.zeebe.protocol.impl.record.value.deployment.DeploymentRecord;
-import io.zeebe.protocol.impl.record.value.error.ErrorRecord;
-import io.zeebe.protocol.impl.record.value.job.JobRecord;
-import io.zeebe.protocol.impl.record.value.message.MessageRecord;
-import io.zeebe.protocol.impl.record.value.timer.TimerRecord;
-import io.zeebe.protocol.record.Assertions;
 import io.zeebe.protocol.record.Record;
-import io.zeebe.protocol.record.value.DeploymentRecordValue;
-import io.zeebe.protocol.record.value.ErrorRecordValue;
-import io.zeebe.protocol.record.value.JobRecordValue;
-import io.zeebe.protocol.record.value.MessageRecordValue;
-import io.zeebe.protocol.record.value.TimerRecordValue;
-import net.jqwik.api.ForAll;
-import net.jqwik.api.Property;
+import io.zeebe.protocol.record.RecordValue;
+import io.zeebe.test.exporter.ExporterIntegrationRule;
+import io.zeebe.test.util.record.RecordingExporter;
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.Test;
 
-public final class ImmutableRecordSerializationTest {
+final class ImmutableRecordSerializationTest {
+
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
-  @Property(tries = 100)
-  void canSerializeDeploymentRecord(@ForAll final Record<DeploymentRecord> expected)
-      throws JsonProcessingException {
+  @Test
+  void shouldSerializeRecords() throws IOException {
     // given
-    final var serialized = MAPPER.writeValueAsString(expected);
+    final ExporterIntegrationRule testHarness = new ExporterIntegrationRule();
+    testHarness.configure("debug", DebugHttpExporter.class, Map.of("port", 9000, "limit", 3000));
 
     // when
-    final var actual =
-        MAPPER.readValue(
-            serialized, new TypeReference<ImmutableRecord<DeploymentRecordValue>>() {});
+    testHarness.start();
+    testHarness.performSampleWorkload();
 
     // then
-    final var expectedValue = expected.getValue();
-    final var actualValue = actual.getValue();
-    ImmutableAssertions.assertThat(actual).isEqualToIgnoringValue(expected);
-    assertThat(actualValue.getDeployedWorkflows())
-        .zipSatisfy(
-            expectedValue.getDeployedWorkflows(),
-            (a, e) -> {
-              Assertions.assertThat(a)
-                  .hasBpmnProcessId(e.getBpmnProcessId())
-                  .hasWorkflowKey(e.getWorkflowKey())
-                  .hasResourceName(e.getResourceName())
-                  .hasVersion(e.getVersion());
-            });
-    assertThat(actualValue.getResources())
-        .zipSatisfy(
-            expectedValue.getResources(),
-            (a, e) -> {
-              Assertions.assertThat(a)
-                  .hasResource(e.getResource())
-                  .hasResourceType(e.getResourceType())
-                  .hasResourceName(e.getResourceName());
-            });
+    // collecting all exported records will wait up to 2 seconds before returning, giving us some
+    // assumption for now that everything has been exported
+    RecordingExporter.setMaximumWaitTime(2_000);
+    final List<Record<RecordValue>> exportedRecords =
+        RecordingExporter.records().collect(Collectors.toList());
+    final int exportedCount = exportedRecords.size();
+    final List<ImmutableRecord<?>> deserializedRecords = fetchJsonRecords(exportedCount);
+    assertThat(deserializedRecords).hasSameSizeAs(exportedRecords);
+
+    // since the DebugHttpExporter reverses the order, flip it again to compare against the
+    // RecordingExporter
+    for (int i = 0; i < exportedCount; i++) {
+      final ImmutableRecord<?> deserializedRecord =
+          deserializedRecords.get((exportedCount - 1) - i);
+      final Record<RecordValue> exportedRecord = exportedRecords.get(i);
+      ImmutableAssertions.assertThat(deserializedRecord).isEqualTo(exportedRecord);
+    }
   }
 
-  @Property(tries = 100)
-  void canSerializeErrorRecord(@ForAll final Record<ErrorRecord> expected)
-      throws JsonProcessingException {
-    // given
-    final var serialized = MAPPER.writeValueAsString(expected);
+  private List<ImmutableRecord<?>> fetchJsonRecords(final int expectedCount) throws IOException {
+    final URL url = new URL("http://localhost:9000/records.json");
 
-    // when
-    final var actual =
-        MAPPER.readValue(serialized, new TypeReference<ImmutableRecord<ErrorRecordValue>>() {});
-
-    // then
-    final var actualValue = actual.getValue();
-    final var expectedValue = expected.getValue();
-    ImmutableAssertions.assertThat(actual).isEqualToIgnoringValue(expected);
-    Assertions.assertThat(actualValue)
-        .hasErrorEventPosition(expectedValue.getErrorEventPosition())
-        .hasWorkflowInstanceKey(expectedValue.getWorkflowInstanceKey())
-        .hasExceptionMessage(expectedValue.getExceptionMessage())
-        .hasStacktrace(expectedValue.getStacktrace());
-  }
-
-  @Property(tries = 100)
-  void canSerializeJobRecord(@ForAll final Record<JobRecord> expected)
-      throws JsonProcessingException {
-    // given
-    final var serialized = MAPPER.writeValueAsString(expected);
-
-    // when
-    final var actual =
-        MAPPER.readValue(serialized, new TypeReference<ImmutableRecord<JobRecordValue>>() {});
-
-    // then
-    final var actualValue = actual.getValue();
-    final var expectedValue = expected.getValue();
-    ImmutableAssertions.assertThat(actual).isEqualToIgnoringValue(expected);
-    Assertions.assertThat(actualValue)
-        .hasBpmnProcessId(expectedValue.getBpmnProcessId())
-        .hasCustomHeaders(expectedValue.getCustomHeaders())
-        .hasDeadline(expectedValue.getDeadline())
-        .hasElementId(expectedValue.getElementId())
-        .hasElementInstanceKey(expectedValue.getElementInstanceKey())
-        .hasErrorCode(expectedValue.getErrorCode())
-        .hasErrorMessage(expectedValue.getErrorMessage())
-        .hasRetries(expectedValue.getRetries())
-        .hasType(expectedValue.getType())
-        .hasWorker(expectedValue.getWorker())
-        .hasWorkflowDefinitionVersion(expectedValue.getWorkflowDefinitionVersion())
-        .hasWorkflowKey(expectedValue.getWorkflowKey())
-        .hasFieldOrPropertyWithValue("workflowInstanceKey", expectedValue.getWorkflowInstanceKey());
-  }
-
-  @Property(tries = 100)
-  void canSerializeMessageRecord(@ForAll final Record<MessageRecord> expected)
-      throws JsonProcessingException {
-    // given
-    final var serialized = MAPPER.writeValueAsString(expected);
-
-    // when
-    final var actual =
-        MAPPER.readValue(serialized, new TypeReference<ImmutableRecord<MessageRecordValue>>() {});
-
-    // then
-    final var actualValue = actual.getValue();
-    final var expectedValue = expected.getValue();
-    ImmutableAssertions.assertThat(actual).isEqualToIgnoringValue(expected);
-    Assertions.assertThat(actualValue)
-        .hasMessageId(expectedValue.getMessageId())
-        .hasCorrelationKey(expectedValue.getCorrelationKey())
-        .hasName(expectedValue.getName())
-        .hasTimeToLive(expectedValue.getTimeToLive());
-    assertThat(actualValue.getVariables()).containsExactlyEntriesOf(expectedValue.getVariables());
-  }
-
-  @Property(tries = 100)
-  void canSerializeTimerRecord(@ForAll final Record<TimerRecord> expected)
-      throws JsonProcessingException {
-    // given
-    final var serialized = MAPPER.writeValueAsString(expected);
-
-    // when
-    final var actual =
-        MAPPER.readValue(serialized, new TypeReference<ImmutableRecord<TimerRecordValue>>() {});
-
-    // then
-    final var expectedValue = expected.getValue();
-    ImmutableAssertions.assertThat(actual).isEqualToIgnoringValue(expected);
-    Assertions.assertThat(actual.getValue())
-        .hasElementInstanceKey(expectedValue.getElementInstanceKey())
-        .hasWorkflowInstanceKey(expectedValue.getWorkflowInstanceKey())
-        .hasWorkflowKey(expectedValue.getWorkflowKey())
-        .hasDueDate(expectedValue.getDueDate())
-        .hasTargetElementId(expectedValue.getTargetElementId())
-        .hasRepetitions(expectedValue.getRepetitions());
+    return Awaitility.await("until we have at least " + expectedCount + " records")
+        .pollInSameThread()
+        .until(
+            () -> MAPPER.readerFor(new TypeReference<List<ImmutableRecord<?>>>() {}).readValue(url),
+            records -> records.size() >= expectedCount);
   }
 }

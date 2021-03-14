@@ -21,17 +21,4 @@ import org.immutables.value.Value;
 @Value.Immutable
 @ZeebeStyle
 abstract class AbstractMessageRecordValue extends AbstractJsonSerializable
-    implements MessageRecordValue {
-
-  @Value.Default
-  @Override
-  public String getMessageId() {
-    return "";
-  }
-
-  @Value.Default
-  @Override
-  public long getTimeToLive() {
-    return 0;
-  }
-}
+    implements MessageRecordValue {}

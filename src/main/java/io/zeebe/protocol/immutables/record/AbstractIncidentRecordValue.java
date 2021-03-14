@@ -15,6 +15,7 @@
  */
 package io.zeebe.protocol.immutables.record;
 
+import io.zeebe.protocol.record.value.ErrorType;
 import io.zeebe.protocol.record.value.IncidentRecordValue;
 import org.immutables.value.Value;
 
@@ -25,7 +26,7 @@ abstract class AbstractIncidentRecordValue extends AbstractJsonSerializable
 
   @Value.Default
   @Override
-  public long getJobKey() {
-    return -1;
+  public ErrorType getErrorType() {
+    return ErrorType.UNKNOWN;
   }
 }

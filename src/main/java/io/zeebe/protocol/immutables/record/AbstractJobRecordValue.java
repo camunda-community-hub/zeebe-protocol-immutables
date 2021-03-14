@@ -33,12 +33,6 @@ abstract class AbstractJobRecordValue extends AbstractJsonSerializable implement
 
   @Value.Default
   @Override
-  public String getErrorMessage() {
-    return "";
-  }
-
-  @Value.Default
-  @Override
   public String getErrorCode() {
     return ErrorCode.NULL_VAL.name();
   }

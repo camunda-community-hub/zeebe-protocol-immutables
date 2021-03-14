@@ -21,23 +21,4 @@ import org.immutables.value.Value;
 @Value.Immutable
 @ZeebeStyle
 abstract class AbstractErrorRecordValue extends AbstractJsonSerializable
-    implements ErrorRecordValue {
-
-  @Value.Default
-  @Override
-  public String getExceptionMessage() {
-    return "";
-  }
-
-  @Value.Default
-  @Override
-  public String getStacktrace() {
-    return "";
-  }
-
-  @Value.Default
-  @Override
-  public long getWorkflowInstanceKey() {
-    return -1;
-  }
-}
+    implements ErrorRecordValue {}

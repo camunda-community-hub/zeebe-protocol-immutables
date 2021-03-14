@@ -21,11 +21,4 @@ import org.immutables.value.Value;
 @Value.Immutable
 @ZeebeStyle
 abstract class AbstractTimerRecordValue extends AbstractJsonSerializable
-    implements TimerRecordValue {
-
-  @Value.Default
-  @Override
-  public int getRepetitions() {
-    return 0;
-  }
-}
+    implements TimerRecordValue {}

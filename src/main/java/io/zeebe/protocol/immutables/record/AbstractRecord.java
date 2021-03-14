@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import io.zeebe.protocol.record.Record;
+import io.zeebe.protocol.record.RecordType;
 import io.zeebe.protocol.record.RecordValue;
 import io.zeebe.protocol.record.RejectionType;
 import io.zeebe.protocol.record.intent.Intent;
@@ -31,18 +32,6 @@ abstract class AbstractRecord<T extends RecordValue> extends AbstractJsonSeriali
     implements Record<T> {
 
   @Value.Default
-  @Override
-  public long getSourceRecordPosition() {
-    return -1;
-  }
-
-  @Value.Default
-  @Override
-  public long getKey() {
-    return -1;
-  }
-
-  @Value.Default
   @JsonTypeInfo(use = Id.CUSTOM, include = As.EXTERNAL_PROPERTY, property = "valueType")
   @JsonTypeIdResolver(IntentTypeIdResolver.class)
   @Override
@@ -52,20 +41,14 @@ abstract class AbstractRecord<T extends RecordValue> extends AbstractJsonSeriali
 
   @Value.Default
   @Override
+  public RecordType getRecordType() {
+    return RecordType.NULL_VAL;
+  }
+
+  @Value.Default
+  @Override
   public RejectionType getRejectionType() {
     return RejectionType.NULL_VAL;
-  }
-
-  @Value.Default
-  @Override
-  public String getRejectionReason() {
-    return "";
-  }
-
-  @Value.Default
-  @Override
-  public String getBrokerVersion() {
-    return "";
   }
 
   @JsonTypeInfo(use = Id.CUSTOM, include = As.EXTERNAL_PROPERTY, property = "valueType")

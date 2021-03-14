@@ -29,22 +29,4 @@ abstract class AbstractWorkflowInstanceRecordValue extends AbstractJsonSerializa
   public BpmnElementType getBpmnElementType() {
     return BpmnElementType.UNSPECIFIED;
   }
-
-  @Value.Default
-  @Override
-  public long getFlowScopeKey() {
-    return -1;
-  }
-
-  @Value.Default
-  @Override
-  public long getParentWorkflowInstanceKey() {
-    return -1;
-  }
-
-  @Value.Default
-  @Override
-  public long getParentElementInstanceKey() {
-    return -1;
-  }
 }

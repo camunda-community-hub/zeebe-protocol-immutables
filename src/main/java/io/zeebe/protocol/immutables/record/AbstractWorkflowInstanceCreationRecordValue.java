@@ -16,18 +16,9 @@
 package io.zeebe.protocol.immutables.record;
 
 import io.zeebe.protocol.record.value.WorkflowInstanceCreationRecordValue;
-import java.util.Collections;
-import java.util.Map;
 import org.immutables.value.Value;
 
 @Value.Immutable
 @ZeebeStyle
 abstract class AbstractWorkflowInstanceCreationRecordValue extends AbstractJsonSerializable
-    implements WorkflowInstanceCreationRecordValue {
-
-  @Value.Default
-  @Override
-  public Map<String, Object> getVariables() {
-    return Collections.emptyMap();
-  }
-}
+    implements WorkflowInstanceCreationRecordValue {}
