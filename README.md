@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/zeebe-io/zeebe-protocol-immutables.svg?branch=master)](https://travis-ci.org/zeebe-io/zeebe-protocol-immutables)
-
 # zeebe-protocol-immutables
 
 This library provides an implementation of the Zeebe protocol which can be serialized and
@@ -61,9 +59,8 @@ For example, an exporter could do the following:
 ```java
 private static final ObjectMapper MAPPER = new ObjectMapper();
 
-public void export(Record record) {
-
-  final Record clone = ImmutableRecord.builder().from(record);
+public void export(Record<?> record) {
+  final Record<?> clone = ImmutableRecordCopier.deepCopyOf(record);
   
   try(final OutputStream out = createOutputStream()) {
     MAPPER.writeValue(out, clone);  
@@ -73,17 +70,28 @@ public void export(Record record) {
 
 You could then have configured the `ObjectMapper` to write YAML, CBOR, etc., beforehand.
 
-### Limitations
+### Copying and comparing
 
-There are some known limitations regarding serialization. Serializing as shown above will not
-serialize nested types, e.g. the value itself. If you want to do so recursively, you first have to
-clone the value itself and set it in the builder. I'd like to improve this, but haven't gotten to it
-yet, as I was mostly focused on deserialization.
+If you want to compare two `Record<T>` instances with potentially different implementations, the
+recommended way is to first convert them both to `ImmutableRecord<T>`.
 
-Another known limitation is that an `ImmutableRecord` is not necessarily equal to the `Record`, even
-if they are logically equal. That is to say, serializing a record, then deserializing will not give
-two records which are `Object#equals()`. This is expected as `Record` is just an interface, but can
-be surprising nonetheless.
+The easiest way is to use the `ImmutableRecordCopier` utility class. You can do a deep copy of any 
+`Record<>` as is, and it will return an equivalent `ImmutableRecord<>`.
+
+```java
+final Record<?> record = ...;
+final ImmutableRecord<?> copiedRecord = ImmutableRecordCopier.deepCopyOf(record);
+```
+
+If you just want to copy the record value, or if you want to have a 
+`ImmutableRecord<ImmutableJobRecordValue>`, for example, then you can copy the value first and copy
+the record yourself as:
+
+```java
+final Record<DeploymentRecordValue> record = ...;
+final ImmutableDeploymentRecordValue copiedValue = ImmutableRecordCopier.deepCopyOf(record.getValueType(), record.getValue()); 
+final ImmutableRecord<ImmutableDeploymentRecordValue> copiedRecord = ImmutableRecord.builder().from(record).value(copiedValue).build();
+```
 
 ## Development
 
@@ -122,17 +130,45 @@ the generated `Immutable*` versions of these classes.
 
 ### Deserialization
 
-The `Record` class in the protocol is typed; the value's concrete class and the intent's concrete 
-enum are both derived from the `Record#getValueType`. As such, both fields are annotated using
-`@JsonTypeInfo` which points to that property, and are given a corresponding type resolver (see
-`ValueTypeIdResolver` and `IntentTypeIdResolver`), which allows Jackson to properly deserialize a 
-`Record<DeploymentRecordValue>` concretely as `ImmutableRecord<ImmutableDeploymentRecordValue>`.
+Since `Record<T>` is a typed interface, we need to resolve `T` during deserialization. The way to do
+so in Zeebe is by using the `Record#getValueType()`.
+
+> You can look at `ValueTypeIdResolver` to see how we resolve the value type to the right value
+> class.
+
+The `Intent` of the record is an interface, which also needs to be resolved to the correct type
+during deserialization.
+
+> You can look at `IntentTypeIdResolver` to see how raw intents are mapped to the right type.
+
+With these out of the way, you can then easily deserialize a raw JSON payload into an
+`ImmutableRecord<T>`, where all types are properly resolved. See [usage](#usage) for more.
 
 ## Testing
 
-Currently testing is sort of a playground - I decided to go for property based testing using jqwik, 
-and I'm learning as I go, so there are bound to be mistakes in how I'm doing this.
-Contributions are more than welcome :)
+We assume that the `immutables` library works properly, and as such focus primarily on the
+serialization capabilities.
+
+To test this, we use two built-in exporters: specifically the `DebugHttpExporter` and
+the `RecordingExporter`.
+
+We start a Zeebe broker, run a sample workload, then wait for all records to be exported.
+
+> NOTE: waiting for all records to be exported is difficult due to the black box nature of the test
+> infrastructure, so we simply wait up until some seconds have passed since the last record was
+> exported. This is relatively safe since the `ExporterIntegrationRule` already waits until the
+> workload is finished and exported to the `RecordingExporter`, so waiting just a few seconds more
+> is mostly just to be safe.
+
+The `DebugHttpExporter` provides an endpoint where we can get all exported records as JSON. This is
+our sample data set from which we can test the deserialization capabilities of the library.
+
+The `RecordingExporter` provides us with the raw exported records against which we can then compare.
+
+To simplify the comparison, the raw records are first converted to an equivalent
+`ImmutableRecord<?>` representation. This may seem tautological, but as mentioned, we assume the
+generated code is valid (which includes the builders), and just want to verify that serialization
+works as expected.
 
 ## Code of Conduct
 

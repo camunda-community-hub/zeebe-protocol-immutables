@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zeebe.broker.exporter.debug.DebugHttpExporter;
-import io.zeebe.protocol.immutables.record.assertj.ImmutableAssertions;
+import io.zeebe.protocol.immutables.ImmutableRecordCopier;
 import io.zeebe.protocol.record.Record;
 import io.zeebe.protocol.record.RecordValue;
 import io.zeebe.test.exporter.ExporterIntegrationRule;
@@ -31,20 +31,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 final class ImmutableRecordSerializationTest {
 
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
+  private final ExporterIntegrationRule testHarness = new ExporterIntegrationRule();
+
+  @BeforeEach
+  void beforeEach() {
+    testHarness.configure("debug", DebugHttpExporter.class, Map.of("port", 9000, "limit", 3000));
+  }
+
+  @AfterEach
+  void afterEach() {
+    testHarness.stop();
+  }
+
   @Test
   void shouldSerializeRecords() throws IOException {
     // given
-    final ExporterIntegrationRule testHarness = new ExporterIntegrationRule();
-    testHarness.configure("debug", DebugHttpExporter.class, Map.of("port", 9000, "limit", 3000));
+    testHarness.start();
 
     // when
-    testHarness.start();
     testHarness.performSampleWorkload();
 
     // then
@@ -63,7 +75,8 @@ final class ImmutableRecordSerializationTest {
       final ImmutableRecord<?> deserializedRecord =
           deserializedRecords.get((exportedCount - 1) - i);
       final Record<RecordValue> exportedRecord = exportedRecords.get(i);
-      ImmutableAssertions.assertThat(deserializedRecord).isEqualTo(exportedRecord);
+      assertThat(deserializedRecord)
+          .isEqualTo(ImmutableRecordCopier.deepCopyOfRecord(exportedRecord));
     }
   }
 

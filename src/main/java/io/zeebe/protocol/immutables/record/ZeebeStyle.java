@@ -34,6 +34,7 @@ import org.immutables.value.Value.Style.ValidationMethod;
     validationMethod = ValidationMethod.NONE,
     defaultAsDefault = true,
     headerComments = true,
-    clearBuilder = true)
+    clearBuilder = true,
+    deepImmutablesDetection = true)
 @JsonSerialize
 public @interface ZeebeStyle {}
