@@ -27,6 +27,13 @@ or the appropriate Gradle dependency:
 implementation 'io.zeebe.protocol:zeebe-protocol-immutables:1.0.0'
 ```
 
+### Compatibility
+
+`zeebe-protocol-immutables` 1.x is compatible with Zeebe versions 0.23.x (inclusive) to 1.x 
+(exclusive).
+
+`zeebe-protocol-immutables` 2.x is compatible with Zeebe 1.x.
+
 ### Deserialize from JSON
 
 If you want to deserialize records that were serialized using `Record#toJson`, you can use the
