@@ -17,14 +17,14 @@ Add the Maven dependency to your `pom.xml`
 <dependency>
   <groupId>io.zeebe.protocol</groupId>
   <artifactId>zeebe-protocol-immutables</artifactId>
-  <version>1.0.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
 or the appropriate Gradle dependency:
 
 ```groovy
-implementation 'io.zeebe.protocol:zeebe-protocol-immutables:1.0.0'
+implementation 'io.zeebe.protocol:zeebe-protocol-immutables:1.2.0'
 ```
 
 ### Compatibility
