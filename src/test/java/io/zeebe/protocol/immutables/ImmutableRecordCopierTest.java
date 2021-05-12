@@ -17,7 +17,7 @@ package io.zeebe.protocol.immutables;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import io.zeebe.protocol.record.ValueType;
+import io.camunda.zeebe.protocol.record.ValueType;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
@@ -27,7 +27,7 @@ final class ImmutableRecordCopierTest {
   /**
    * This test checks that every known record value type is handled by the {@link
    * ImmutableRecordCopier}, and should fail if it isn't. This is a smoke test when updating Zeebe
-   * versions to detect new {@link io.zeebe.protocol.record.ValueType} instances.
+   * versions to detect new {@link io.camunda.zeebe.protocol.record.ValueType} instances.
    */
   @EnumSource(
       value = ValueType.class,
