@@ -10,6 +10,5 @@ updates:
       prefix: "deps: "
     labels:
       - "dependencies"
-    reviewers: []
     target-branch: "master"
     open-pull-requests-limit: 10
