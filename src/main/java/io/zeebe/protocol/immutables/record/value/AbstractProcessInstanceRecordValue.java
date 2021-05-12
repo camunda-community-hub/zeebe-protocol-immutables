@@ -13,12 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables.record.value;
 
-import io.zeebe.protocol.record.value.ErrorRecordValue;
+import io.camunda.zeebe.protocol.record.value.BpmnElementType;
+import io.camunda.zeebe.protocol.record.value.ProcessInstanceRecordValue;
+import io.zeebe.protocol.immutables.ZeebeStyle;
 import org.immutables.value.Value;
 
 @Value.Immutable
 @ZeebeStyle
-abstract class AbstractErrorRecordValue extends AbstractJsonSerializable
-    implements ErrorRecordValue {}
+public abstract class AbstractProcessInstanceRecordValue extends AbstractJsonSerializable
+    implements ProcessInstanceRecordValue {
+
+  @Value.Default
+  @Override
+  public BpmnElementType getBpmnElementType() {
+    return BpmnElementType.UNSPECIFIED;
+  }
+}

@@ -13,20 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables.record.value;
 
-import io.zeebe.protocol.record.value.BpmnElementType;
-import io.zeebe.protocol.record.value.WorkflowInstanceRecordValue;
+import io.camunda.zeebe.protocol.record.ErrorCode;
+import io.camunda.zeebe.protocol.record.value.JobRecordValue;
+import io.zeebe.protocol.immutables.ZeebeStyle;
+import java.util.Collections;
+import java.util.Map;
 import org.immutables.value.Value;
 
 @Value.Immutable
 @ZeebeStyle
-abstract class AbstractWorkflowInstanceRecordValue extends AbstractJsonSerializable
-    implements WorkflowInstanceRecordValue {
+public abstract class AbstractJobRecordValue extends AbstractJsonSerializable
+    implements JobRecordValue {
 
   @Value.Default
   @Override
-  public BpmnElementType getBpmnElementType() {
-    return BpmnElementType.UNSPECIFIED;
+  public Map<String, String> getCustomHeaders() {
+    return Collections.emptyMap();
+  }
+
+  @Value.Default
+  @Override
+  public String getErrorCode() {
+    return ErrorCode.NULL_VAL.name();
+  }
+
+  @Value.Default
+  @Override
+  public Map<String, Object> getVariables() {
+    return Collections.emptyMap();
   }
 }

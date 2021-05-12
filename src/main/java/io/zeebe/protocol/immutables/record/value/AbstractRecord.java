@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables.record.value;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
-import io.zeebe.protocol.record.Record;
-import io.zeebe.protocol.record.RecordType;
-import io.zeebe.protocol.record.RecordValue;
-import io.zeebe.protocol.record.RejectionType;
-import io.zeebe.protocol.record.intent.Intent;
+import io.camunda.zeebe.protocol.record.Record;
+import io.camunda.zeebe.protocol.record.RecordType;
+import io.camunda.zeebe.protocol.record.RecordValue;
+import io.camunda.zeebe.protocol.record.RejectionType;
+import io.camunda.zeebe.protocol.record.intent.Intent;
+import io.zeebe.protocol.immutables.ZeebeStyle;
 import org.immutables.value.Value;
 
 @Value.Immutable
 @ZeebeStyle
-abstract class AbstractRecord<T extends RecordValue> extends AbstractJsonSerializable
+public abstract class AbstractRecord<T extends RecordValue> extends AbstractJsonSerializable
     implements Record<T> {
 
   @Value.Default

@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables.record.value;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.zeebe.protocol.record.value.DeploymentRecordValue;
-import io.zeebe.protocol.record.value.deployment.DeployedWorkflow;
-import io.zeebe.protocol.record.value.deployment.DeploymentResource;
+import io.camunda.zeebe.protocol.record.value.DeploymentRecordValue;
+import io.camunda.zeebe.protocol.record.value.deployment.DeploymentResource;
+import io.camunda.zeebe.protocol.record.value.deployment.ProcessMetadataValue;
+import io.zeebe.protocol.immutables.ZeebeStyle;
+import io.zeebe.protocol.immutables.record.value.deployment.ImmutableDeploymentResource;
+import io.zeebe.protocol.immutables.record.value.deployment.ImmutableProcessMetadata;
 import java.util.Collections;
 import java.util.List;
 import org.immutables.value.Value;
 
 @Value.Immutable
 @ZeebeStyle
-abstract class AbstractDeploymentRecordValue extends AbstractJsonSerializable
+public abstract class AbstractDeploymentRecordValue extends AbstractJsonSerializable
     implements DeploymentRecordValue {
 
   @Value.Default
@@ -36,17 +39,9 @@ abstract class AbstractDeploymentRecordValue extends AbstractJsonSerializable
   }
 
   @Value.Default
-  @JsonDeserialize(contentAs = ImmutableDeployedWorkflow.class)
+  @JsonDeserialize(contentAs = ImmutableProcessMetadata.class)
   @Override
-  public List<DeployedWorkflow> getDeployedWorkflows() {
+  public List<ProcessMetadataValue> getProcessesMetadata() {
     return Collections.emptyList();
   }
-
-  @Value.Immutable
-  @ZeebeStyle
-  public abstract static class AbstractDeployedWorkflow implements DeployedWorkflow {}
-
-  @Value.Immutable
-  @ZeebeStyle
-  public abstract static class AbstractDeploymentResource implements DeploymentResource {}
 }

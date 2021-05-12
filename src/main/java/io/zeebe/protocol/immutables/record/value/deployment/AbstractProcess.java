@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables.record.value.deployment;
 
-import io.zeebe.protocol.record.value.VariableRecordValue;
+import io.camunda.zeebe.protocol.record.value.deployment.Process;
+import io.zeebe.protocol.immutables.ZeebeStyle;
+import io.zeebe.protocol.immutables.record.value.AbstractJsonSerializable;
 import org.immutables.value.Value;
 
 @Value.Immutable
 @ZeebeStyle
-abstract class AbstractVariableRecordValue extends AbstractJsonSerializable
-    implements VariableRecordValue {}
+public abstract class AbstractProcess extends AbstractJsonSerializable implements Process {}

@@ -13,12 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables.record.value;
 
-import io.zeebe.protocol.record.value.MessageSubscriptionRecordValue;
+import io.camunda.zeebe.protocol.record.value.ErrorType;
+import io.camunda.zeebe.protocol.record.value.IncidentRecordValue;
+import io.zeebe.protocol.immutables.ZeebeStyle;
 import org.immutables.value.Value;
 
 @Value.Immutable
 @ZeebeStyle
-abstract class AbstractMessageSubscriptionRecordValue extends AbstractJsonSerializable
-    implements MessageSubscriptionRecordValue {}
+public abstract class AbstractIncidentRecordValue extends AbstractJsonSerializable
+    implements IncidentRecordValue {
+
+  @Value.Default
+  @Override
+  public ErrorType getErrorType() {
+    return ErrorType.UNKNOWN;
+  }
+}

@@ -13,33 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables.record.value.deployment;
 
-import io.zeebe.protocol.record.ErrorCode;
-import io.zeebe.protocol.record.value.JobRecordValue;
-import java.util.Collections;
-import java.util.Map;
+import io.camunda.zeebe.protocol.record.value.deployment.ProcessMetadataValue;
+import io.zeebe.protocol.immutables.ZeebeStyle;
+import io.zeebe.protocol.immutables.record.value.AbstractJsonSerializable;
 import org.immutables.value.Value;
 
 @Value.Immutable
 @ZeebeStyle
-abstract class AbstractJobRecordValue extends AbstractJsonSerializable implements JobRecordValue {
-
-  @Value.Default
-  @Override
-  public Map<String, String> getCustomHeaders() {
-    return Collections.emptyMap();
-  }
-
-  @Value.Default
-  @Override
-  public String getErrorCode() {
-    return ErrorCode.NULL_VAL.name();
-  }
-
-  @Value.Default
-  @Override
-  public Map<String, Object> getVariables() {
-    return Collections.emptyMap();
-  }
-}
+public abstract class AbstractProcessMetadata extends AbstractJsonSerializable
+    implements ProcessMetadataValue {}

@@ -15,45 +15,51 @@
  */
 package io.zeebe.protocol.immutables;
 
-import io.zeebe.protocol.immutables.record.ImmutableDeployedWorkflow;
-import io.zeebe.protocol.immutables.record.ImmutableDeploymentRecordValue;
-import io.zeebe.protocol.immutables.record.ImmutableDeploymentResource;
-import io.zeebe.protocol.immutables.record.ImmutableErrorRecordValue;
-import io.zeebe.protocol.immutables.record.ImmutableIncidentRecordValue;
-import io.zeebe.protocol.immutables.record.ImmutableJobBatchRecordValue;
-import io.zeebe.protocol.immutables.record.ImmutableJobRecordValue;
-import io.zeebe.protocol.immutables.record.ImmutableMessageRecordValue;
-import io.zeebe.protocol.immutables.record.ImmutableMessageStartEventSubscriptionRecordValue;
-import io.zeebe.protocol.immutables.record.ImmutableMessageSubscriptionRecordValue;
-import io.zeebe.protocol.immutables.record.ImmutableRecord;
-import io.zeebe.protocol.immutables.record.ImmutableRecord.Builder;
-import io.zeebe.protocol.immutables.record.ImmutableTimerRecordValue;
-import io.zeebe.protocol.immutables.record.ImmutableVariableDocumentRecordValue;
-import io.zeebe.protocol.immutables.record.ImmutableVariableRecordValue;
-import io.zeebe.protocol.immutables.record.ImmutableWorkflowInstanceCreationRecordValue;
-import io.zeebe.protocol.immutables.record.ImmutableWorkflowInstanceRecordValue;
-import io.zeebe.protocol.immutables.record.ImmutableWorkflowInstanceResultRecordValue;
-import io.zeebe.protocol.immutables.record.ImmutableWorkflowInstanceSubscriptionRecordValue;
-import io.zeebe.protocol.record.Record;
-import io.zeebe.protocol.record.RecordValue;
-import io.zeebe.protocol.record.ValueType;
-import io.zeebe.protocol.record.value.DeploymentRecordValue;
-import io.zeebe.protocol.record.value.ErrorRecordValue;
-import io.zeebe.protocol.record.value.IncidentRecordValue;
-import io.zeebe.protocol.record.value.JobBatchRecordValue;
-import io.zeebe.protocol.record.value.JobRecordValue;
-import io.zeebe.protocol.record.value.MessageRecordValue;
-import io.zeebe.protocol.record.value.MessageStartEventSubscriptionRecordValue;
-import io.zeebe.protocol.record.value.MessageSubscriptionRecordValue;
-import io.zeebe.protocol.record.value.TimerRecordValue;
-import io.zeebe.protocol.record.value.VariableDocumentRecordValue;
-import io.zeebe.protocol.record.value.VariableRecordValue;
-import io.zeebe.protocol.record.value.WorkflowInstanceCreationRecordValue;
-import io.zeebe.protocol.record.value.WorkflowInstanceRecordValue;
-import io.zeebe.protocol.record.value.WorkflowInstanceResultRecordValue;
-import io.zeebe.protocol.record.value.WorkflowInstanceSubscriptionRecordValue;
-import io.zeebe.protocol.record.value.deployment.DeployedWorkflow;
-import io.zeebe.protocol.record.value.deployment.DeploymentResource;
+import io.camunda.zeebe.protocol.record.Record;
+import io.camunda.zeebe.protocol.record.RecordValue;
+import io.camunda.zeebe.protocol.record.ValueType;
+import io.camunda.zeebe.protocol.record.value.DeploymentDistributionRecordValue;
+import io.camunda.zeebe.protocol.record.value.DeploymentRecordValue;
+import io.camunda.zeebe.protocol.record.value.ErrorRecordValue;
+import io.camunda.zeebe.protocol.record.value.IncidentRecordValue;
+import io.camunda.zeebe.protocol.record.value.JobBatchRecordValue;
+import io.camunda.zeebe.protocol.record.value.JobRecordValue;
+import io.camunda.zeebe.protocol.record.value.MessageRecordValue;
+import io.camunda.zeebe.protocol.record.value.MessageStartEventSubscriptionRecordValue;
+import io.camunda.zeebe.protocol.record.value.MessageSubscriptionRecordValue;
+import io.camunda.zeebe.protocol.record.value.ProcessEventRecordValue;
+import io.camunda.zeebe.protocol.record.value.ProcessInstanceCreationRecordValue;
+import io.camunda.zeebe.protocol.record.value.ProcessInstanceRecordValue;
+import io.camunda.zeebe.protocol.record.value.ProcessInstanceResultRecordValue;
+import io.camunda.zeebe.protocol.record.value.ProcessMessageSubscriptionRecordValue;
+import io.camunda.zeebe.protocol.record.value.TimerRecordValue;
+import io.camunda.zeebe.protocol.record.value.VariableDocumentRecordValue;
+import io.camunda.zeebe.protocol.record.value.VariableRecordValue;
+import io.camunda.zeebe.protocol.record.value.deployment.DeploymentResource;
+import io.camunda.zeebe.protocol.record.value.deployment.Process;
+import io.camunda.zeebe.protocol.record.value.deployment.ProcessMetadataValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableDeploymentDistributionRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableDeploymentRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableErrorRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableIncidentRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableJobBatchRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableJobRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableMessageRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableMessageStartEventSubscriptionRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableMessageSubscriptionRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableProcessEventRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableProcessInstanceCreationRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableProcessInstanceRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableProcessInstanceResultRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableProcessMessageSubscriptionRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableRecord;
+import io.zeebe.protocol.immutables.record.value.ImmutableRecord.Builder;
+import io.zeebe.protocol.immutables.record.value.ImmutableTimerRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableVariableDocumentRecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableVariableRecordValue;
+import io.zeebe.protocol.immutables.record.value.deployment.ImmutableDeploymentResource;
+import io.zeebe.protocol.immutables.record.value.deployment.ImmutableProcess;
+import io.zeebe.protocol.immutables.record.value.deployment.ImmutableProcessMetadata;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +88,8 @@ public final class ImmutableRecordCopier {
     return convertedBuilder.value(value).build();
   }
 
-  @SuppressWarnings("unchecked")
+  // allow  high cyclomatic complexity due to large switch case which is still easy to reason about
+  @SuppressWarnings({"unchecked", "java:S138", "java:S1541"})
   public static <T extends RecordValue, U extends T> T deepCopyOfRecordValue(
       final ValueType type, final T value) {
     switch (type) {
@@ -90,10 +97,10 @@ public final class ImmutableRecordCopier {
         return (U) ImmutableJobRecordValue.builder().from((JobRecordValue) value).build();
       case DEPLOYMENT:
         return (U) deepCopyOfDeploymentRecordValue((DeploymentRecordValue) value);
-      case WORKFLOW_INSTANCE:
+      case PROCESS_INSTANCE:
         return (U)
-            ImmutableWorkflowInstanceRecordValue.builder()
-                .from((WorkflowInstanceRecordValue) value)
+            ImmutableProcessInstanceRecordValue.builder()
+                .from((ProcessInstanceRecordValue) value)
                 .build();
       case INCIDENT:
         return (U) ImmutableIncidentRecordValue.builder().from((IncidentRecordValue) value).build();
@@ -104,10 +111,10 @@ public final class ImmutableRecordCopier {
             ImmutableMessageSubscriptionRecordValue.builder()
                 .from((MessageSubscriptionRecordValue) value)
                 .build();
-      case WORKFLOW_INSTANCE_SUBSCRIPTION:
+      case PROCESS_MESSAGE_SUBSCRIPTION:
         return (U)
-            ImmutableWorkflowInstanceSubscriptionRecordValue.builder()
-                .from((WorkflowInstanceSubscriptionRecordValue) value)
+            ImmutableProcessMessageSubscriptionRecordValue.builder()
+                .from((ProcessMessageSubscriptionRecordValue) value)
                 .build();
       case JOB_BATCH:
         return (U) deepCopyOfJobBatchRecordValue((JobBatchRecordValue) value);
@@ -125,17 +132,29 @@ public final class ImmutableRecordCopier {
             ImmutableVariableDocumentRecordValue.builder()
                 .from((VariableDocumentRecordValue) value)
                 .build();
-      case WORKFLOW_INSTANCE_CREATION:
+      case PROCESS_INSTANCE_CREATION:
         return (U)
-            ImmutableWorkflowInstanceCreationRecordValue.builder()
-                .from((WorkflowInstanceCreationRecordValue) value)
+            ImmutableProcessInstanceCreationRecordValue.builder()
+                .from((ProcessInstanceCreationRecordValue) value)
                 .build();
       case ERROR:
         return (U) ImmutableErrorRecordValue.builder().from((ErrorRecordValue) value).build();
-      case WORKFLOW_INSTANCE_RESULT:
+      case PROCESS_INSTANCE_RESULT:
         return (U)
-            ImmutableWorkflowInstanceResultRecordValue.builder()
-                .from((WorkflowInstanceResultRecordValue) value)
+            ImmutableProcessInstanceResultRecordValue.builder()
+                .from((ProcessInstanceResultRecordValue) value)
+                .build();
+      case PROCESS:
+        return (U) ImmutableProcess.builder().from((Process) value).build();
+      case DEPLOYMENT_DISTRIBUTION:
+        return (U)
+            ImmutableDeploymentDistributionRecordValue.builder()
+                .from((DeploymentDistributionRecordValue) value)
+                .build();
+      case PROCESS_EVENT:
+        return (U)
+            ImmutableProcessEventRecordValue.builder()
+                .from((ProcessEventRecordValue) value)
                 .build();
       case SBE_UNKNOWN:
       case NULL_VAL:
@@ -146,18 +165,18 @@ public final class ImmutableRecordCopier {
 
   private static ImmutableDeploymentRecordValue deepCopyOfDeploymentRecordValue(
       final DeploymentRecordValue value) {
-    final List<DeployedWorkflow> workflows = new ArrayList<>();
+    final List<ProcessMetadataValue> processes = new ArrayList<>();
     final List<DeploymentResource> resources = new ArrayList<>();
 
-    for (final DeployedWorkflow workflow : value.getDeployedWorkflows()) {
-      final ImmutableDeployedWorkflow immutableWorkflow;
-      if (workflow instanceof ImmutableDeployedWorkflow) {
-        immutableWorkflow = (ImmutableDeployedWorkflow) workflow;
+    for (final ProcessMetadataValue process : value.getProcessesMetadata()) {
+      final ImmutableProcessMetadata immutableProcess;
+      if (process instanceof ImmutableProcessMetadata) {
+        immutableProcess = (ImmutableProcessMetadata) process;
       } else {
-        immutableWorkflow = ImmutableDeployedWorkflow.builder().from(workflow).build();
+        immutableProcess = ImmutableProcessMetadata.builder().from(process).build();
       }
 
-      workflows.add(immutableWorkflow);
+      processes.add(immutableProcess);
     }
 
     for (final DeploymentResource resource : value.getResources()) {
@@ -174,7 +193,7 @@ public final class ImmutableRecordCopier {
     return ImmutableDeploymentRecordValue.builder()
         .from(value)
         .resources(resources)
-        .deployedWorkflows(workflows)
+        .processesMetadata(processes)
         .build();
   }
 

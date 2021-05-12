@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables.record.value;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,19 +21,18 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
 import com.fasterxml.jackson.databind.deser.DefaultDeserializationContext;
-import io.zeebe.protocol.record.RecordValue;
-import io.zeebe.protocol.record.ValueType;
+import io.camunda.zeebe.protocol.record.ValueType;
+import io.camunda.zeebe.protocol.record.intent.Intent;
 import java.io.IOException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 
-final class ValueTypeIdResolverTest {
+final class IntentTypeIdResolverTest {
 
   /**
-   * This test checks that every known record value type is handled. It doesn't validate the
-   * correctness of the result - its goal is to be a smoke test to make sure no value types are
-   * forgotten
+   * This test checks that every known intent type is handled. It doesn't validate the correctness
+   * of the result - its goal is to be a smoke test to make sure no intents are forgotten
    */
   @EnumSource(
       value = ValueType.class,
@@ -50,9 +49,9 @@ final class ValueTypeIdResolverTest {
             mapper.getDeserializationConfig(),
             mapper.createParser("{}"),
             mapper.getInjectableValues());
-    final ValueTypeIdResolver resolver = new ValueTypeIdResolver();
+    final IntentTypeIdResolver resolver = new IntentTypeIdResolver();
     final JavaType resolvedType = resolver.typeFromId(context, resolver.idFromValue(type));
 
-    assertThat(RecordValue.class).isAssignableFrom(resolvedType.getRawClass());
+    assertThat(Intent.class).isAssignableFrom(resolvedType.getRawClass());
   }
 }

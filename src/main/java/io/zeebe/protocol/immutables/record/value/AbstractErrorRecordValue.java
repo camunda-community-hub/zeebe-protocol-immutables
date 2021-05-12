@@ -13,30 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables.record.value;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.zeebe.protocol.record.value.JobBatchRecordValue;
-import io.zeebe.protocol.record.value.JobRecordValue;
-import java.util.Collections;
-import java.util.List;
+import io.camunda.zeebe.protocol.record.value.ErrorRecordValue;
+import io.zeebe.protocol.immutables.ZeebeStyle;
 import org.immutables.value.Value;
 
 @Value.Immutable
 @ZeebeStyle
-abstract class AbstractJobBatchRecordValue extends AbstractJsonSerializable
-    implements JobBatchRecordValue {
-
-  @Value.Default
-  @Override
-  public List<Long> getJobKeys() {
-    return Collections.emptyList();
-  }
-
-  @Value.Default
-  @JsonDeserialize(contentAs = ImmutableJobRecordValue.class)
-  @Override
-  public List<JobRecordValue> getJobs() {
-    return Collections.emptyList();
-  }
-}
+public abstract class AbstractErrorRecordValue extends AbstractJsonSerializable
+    implements ErrorRecordValue {}

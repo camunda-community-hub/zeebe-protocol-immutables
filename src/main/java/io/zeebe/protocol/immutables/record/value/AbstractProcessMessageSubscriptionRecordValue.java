@@ -13,22 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables.record.value;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.zeebe.protocol.record.JsonSerializable;
-import java.io.UncheckedIOException;
+import io.camunda.zeebe.protocol.record.value.ProcessMessageSubscriptionRecordValue;
+import io.zeebe.protocol.immutables.ZeebeStyle;
+import org.immutables.value.Value;
 
-abstract class AbstractJsonSerializable implements JsonSerializable {
-  private static final ObjectMapper MAPPER = new ObjectMapper();
-
-  @Override
-  public String toJson() {
-    try {
-      return MAPPER.writeValueAsString(this);
-    } catch (final JsonProcessingException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-}
+@Value.Immutable
+@ZeebeStyle
+public abstract class AbstractProcessMessageSubscriptionRecordValue extends AbstractJsonSerializable
+    implements ProcessMessageSubscriptionRecordValue {}

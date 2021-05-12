@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables.record.value;
 
-import io.zeebe.protocol.record.value.WorkflowInstanceSubscriptionRecordValue;
+import io.camunda.zeebe.protocol.record.value.VariableDocumentRecordValue;
+import io.zeebe.protocol.immutables.ZeebeStyle;
 import org.immutables.value.Value;
 
 @Value.Immutable
 @ZeebeStyle
-abstract class AbstractWorkflowInstanceSubscriptionRecordValue extends AbstractJsonSerializable
-    implements WorkflowInstanceSubscriptionRecordValue {}
+public abstract class AbstractVariableDocumentRecordValue extends AbstractJsonSerializable
+    implements VariableDocumentRecordValue {}

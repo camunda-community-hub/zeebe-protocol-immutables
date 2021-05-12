@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables.record.value;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
-import io.zeebe.protocol.record.RecordValue;
-import io.zeebe.protocol.record.ValueType;
+import io.camunda.zeebe.protocol.record.RecordValue;
+import io.camunda.zeebe.protocol.record.ValueType;
+import io.zeebe.protocol.immutables.record.value.deployment.ImmutableProcess;
 
 final class ValueTypeIdResolver extends TypeIdResolverBase {
 
@@ -46,22 +47,24 @@ final class ValueTypeIdResolver extends TypeIdResolverBase {
     return typeFactory.constructType(mapValueTypeToRecordValue(valueType));
   }
 
+  // allow  high cyclomatic complexity due to large switch case which is still easy to reason about
+  @SuppressWarnings({"java:S138", "java:S1541"})
   private Class<? extends RecordValue> mapValueTypeToRecordValue(final ValueType valueType) {
     switch (valueType) {
       case JOB:
         return ImmutableJobRecordValue.class;
       case DEPLOYMENT:
         return ImmutableDeploymentRecordValue.class;
-      case WORKFLOW_INSTANCE:
-        return ImmutableWorkflowInstanceRecordValue.class;
+      case PROCESS_INSTANCE:
+        return ImmutableProcessInstanceRecordValue.class;
       case INCIDENT:
         return ImmutableIncidentRecordValue.class;
       case MESSAGE:
         return ImmutableMessageRecordValue.class;
       case MESSAGE_SUBSCRIPTION:
         return ImmutableMessageSubscriptionRecordValue.class;
-      case WORKFLOW_INSTANCE_SUBSCRIPTION:
-        return ImmutableWorkflowInstanceSubscriptionRecordValue.class;
+      case PROCESS_MESSAGE_SUBSCRIPTION:
+        return ImmutableProcessMessageSubscriptionRecordValue.class;
       case JOB_BATCH:
         return ImmutableJobBatchRecordValue.class;
       case TIMER:
@@ -72,12 +75,18 @@ final class ValueTypeIdResolver extends TypeIdResolverBase {
         return ImmutableVariableRecordValue.class;
       case VARIABLE_DOCUMENT:
         return ImmutableVariableDocumentRecordValue.class;
-      case WORKFLOW_INSTANCE_CREATION:
-        return ImmutableWorkflowInstanceCreationRecordValue.class;
+      case PROCESS_INSTANCE_CREATION:
+        return ImmutableProcessInstanceCreationRecordValue.class;
       case ERROR:
         return ImmutableErrorRecordValue.class;
-      case WORKFLOW_INSTANCE_RESULT:
-        return ImmutableWorkflowInstanceResultRecordValue.class;
+      case PROCESS_INSTANCE_RESULT:
+        return ImmutableProcessInstanceResultRecordValue.class;
+      case PROCESS_EVENT:
+        return ImmutableProcessEventRecordValue.class;
+      case PROCESS:
+        return ImmutableProcess.class;
+      case DEPLOYMENT_DISTRIBUTION:
+        return ImmutableDeploymentDistributionRecordValue.class;
       case SBE_UNKNOWN:
       case NULL_VAL:
       default:

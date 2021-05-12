@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables.record.value;
 
-import io.zeebe.protocol.record.value.MessageStartEventSubscriptionRecordValue;
+import io.camunda.zeebe.protocol.record.value.ProcessEventRecordValue;
+import io.zeebe.protocol.immutables.ZeebeStyle;
 import org.immutables.value.Value;
 
 @Value.Immutable
 @ZeebeStyle
-abstract class AbstractMessageStartEventSubscriptionRecordValue
-    implements MessageStartEventSubscriptionRecordValue {}
+public abstract class AbstractProcessEventRecordValue extends AbstractJsonSerializable
+    implements ProcessEventRecordValue {}

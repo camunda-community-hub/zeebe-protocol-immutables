@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import io.zeebe.protocol.record.Record;
-import io.zeebe.protocol.record.RecordValue;
+import io.camunda.zeebe.protocol.record.Record;
+import io.camunda.zeebe.protocol.record.RecordValue;
+import io.zeebe.protocol.immutables.record.value.ImmutableRecord;
 import java.lang.reflect.Type;
 
 /**
  * An implementation of {@link TypeReference} which can be used to deserialize incoming JSON records
  * into {@link Record} instances using {@link ImmutableRecord} as implementation type.
  */
-public final class RecordTypeReference<T extends RecordValue> extends TypeReference<Record<T>> {
+public final class ImmutableRecordTypeReference<T extends RecordValue>
+    extends TypeReference<Record<T>> {
   private final Type type;
 
-  public RecordTypeReference() {
+  public ImmutableRecordTypeReference() {
     this.type = TypeFactory.defaultInstance().constructType(ImmutableRecord.class);
   }
 

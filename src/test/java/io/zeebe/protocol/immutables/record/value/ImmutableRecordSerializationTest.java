@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.protocol.immutables.record;
+package io.zeebe.protocol.immutables.record.value;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.zeebe.broker.exporter.debug.DebugHttpExporter;
+import io.camunda.zeebe.broker.exporter.debug.DebugHttpExporter;
+import io.camunda.zeebe.protocol.record.Record;
+import io.camunda.zeebe.protocol.record.RecordValue;
+import io.camunda.zeebe.test.exporter.ExporterIntegrationRule;
+import io.camunda.zeebe.test.util.record.RecordingExporter;
 import io.zeebe.protocol.immutables.ImmutableRecordCopier;
-import io.zeebe.protocol.record.Record;
-import io.zeebe.protocol.record.RecordValue;
-import io.zeebe.test.exporter.ExporterIntegrationRule;
-import io.zeebe.test.util.record.RecordingExporter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
