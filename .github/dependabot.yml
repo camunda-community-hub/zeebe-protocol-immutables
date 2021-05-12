@@ -7,10 +7,9 @@ updates:
     schedule:
       interval: "daily"
     commit-message:
-      prefix: "deps(master): "
+      prefix: "deps: "
     labels:
       - "dependencies"
-    reviewers:
-      - "npepinpe"
+    reviewers: []
     target-branch: "master"
     open-pull-requests-limit: 10
