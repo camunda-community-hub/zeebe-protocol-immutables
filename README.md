@@ -1,9 +1,11 @@
 # zeebe-protocol-immutables
 
 [![](https://img.shields.io/badge/Community%20Extension-An%20open%20source%20community%20maintained%20project-FF4700)](https://github.com/camunda-community-hub/community)
-[![](https://img.shields.io/badge/Lifecycle-Incubating-blue)](https://github.com/Camunda-Community-Hub/community/blob/main/extension-lifecycle.md#incubating-)
+[![](https://img.shields.io/badge/Lifecycle-Deprecated-yellowgreen)](https://github.com/Camunda-Community-Hub/community/blob/main/extension-lifecycle.md#deprecated-)
 [![](https://img.shields.io/github/v/release/zeebe-io/zeebe-protocol-immutables?sort=semver)](https://github.com/zeebe-io/zeebe-protocol-immutables/releases/latest)
 [![Java CI](https://github.com/camunda-community-hub/zeebe-protocol-immutables/actions/workflows/ci.yml/badge.svg)](https://github.com/camunda-community-hub/zeebe-protocol-immutables/actions/workflows/ci.yml)
+
+## ⚠️ This extension is deprecated for Zeebe 1.3 and onwards - you should make use of `io.camunda:zeebe-protocol-jackson` instead.
 
 This library provides an implementation of the Zeebe protocol which can be serialized and
 deserialized using Jackson.
